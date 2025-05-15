@@ -22,6 +22,11 @@ def customers(request):
        phone_number = request.POST.get("phoneNo")
        estate_name = request.POST.get("estate")
        plot_number = request.POST.get("plot")
+       
+           # Check if any of the fields are empty
+       if not all([name, email, phone_number, estate_name, plot_number]):
+            error = "All fields are required. Please fill in everything."
+            return render(request, "bookkeeping/customers.html", {'error': error, 'customers':customers_lists})
 
        #create
        Customer.objects.create(
@@ -30,7 +35,8 @@ def customers(request):
                 phone_no = phone_number,
                 estate = estate_name,
                 plot_no = plot_number)
-       return render(request, "bookkeeping/customers.html",{'customers':customers_lists})
+       success = "Customer added successfully!"
+       return render(request, "bookkeeping/customers.html",{'customers':customers_lists, 'success':success})
 
     else:
         return render(request, "bookkeeping/customers.html",{'customers':customers_lists})
