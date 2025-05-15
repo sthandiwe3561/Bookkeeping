@@ -11,6 +11,9 @@ def dashboard(request):
 #customers management function
 def customers(request):
 
+      #fetch all the list of the customers
+    customers_lists = Customer.objects.all()
+
     if request.method == "POST":
 
         #fetching the data from the input
@@ -27,7 +30,12 @@ def customers(request):
                 phone_no = phone_number,
                 estate = estate_name,
                 plot_no = plot_number)
-       return redirect(customers)
+       return render(request, "bookkeeping/customers.html",{'customers':customers_lists})
+
     else:
-        return render(request, "bookkeeping/customers.html")
-    
+        return render(request, "bookkeeping/customers.html",{'customers':customers_lists})
+
+def customers_list(request):
+    #fetch all the list of the customers
+    customers_lists = Customer.objects.all()
+    return render(request,"bookkeeping/customers.html",{'customers':customers_lists})
