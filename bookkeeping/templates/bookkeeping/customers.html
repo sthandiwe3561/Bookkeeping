@@ -1,0 +1,41 @@
+{% extends "bookkeeping/layout.html" %} 
+{% block body %}
+<div class="customers">
+<h1>Customers Management</h1>
+<div class="form">
+      <form
+      action=""
+      method="POST"
+    >
+      {% csrf_token %}
+
+      <div class="form-group mt-2">
+        <label>Full Name:</label>
+        <input type="text" id="name" name="name" placeholder="Username" />
+      </div>
+
+        <div class="form-group mt-2">
+        <label>Email:</label>
+        <input type="text" id="email" name="email" placeholder="Email" />
+      </div>
+
+        <div class="form-group mt-2">
+        <label>Phone Number:</label>
+        <input type="tel" id="phoneNo" name="phoneNo" placeholder="Phone Number" />
+      </div>
+
+        <div class="form-group mt-2">
+        <label>Estate Name:</label>
+        <input type="text" id="estate" name="estate" placeholder="Username" />
+      </div>
+
+        <div class="form-group mt-2">
+        <label>Plot No:</label>
+        <input type="number" id="plot" name="plot"/>
+      </div>
+
+      <button type="submit">{% if post %}Edits{% else %}Post{% endif %}</button>
+    </form>
+</div>
+</div>
+{% endblock %}
