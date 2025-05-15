@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 
 from .models import Customer
 
@@ -45,3 +45,16 @@ def customers_list(request):
     #fetch all the list of the customers
     customers_lists = Customer.objects.all()
     return render(request,"bookkeeping/customers.html",{'customers':customers_lists})
+
+def customer_delete(request,post_id):
+     #fecthing the users id     
+    customers_lists = get_object_or_404(Customer, id=post_id)
+
+    customers_lists.delete()
+    
+       #fetch all the list of the customers
+    customers_lists = Customer.objects.all()
+    return render(request,"bookkeeping/customers.html",{'customers':customers_lists})
+
+
+

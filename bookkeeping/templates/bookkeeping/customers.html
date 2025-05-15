@@ -46,13 +46,19 @@
 
 <div class="customersList">
   <h2>Customer List</h2>
-<ul>
   {% for customer in customers %}
-    <li>{{ customer.name }} - {{ customer.email }} - {{ customer.phone_no }}</li>
+    <h2>{{ customer.name }}</h2>
+    <li> {{ customer.email }} </li>
+    <li>{{ customer.phone_no }}</li>
+    <li>{{customer.estate}}</li>
+    <li>{{customer.plot_no}}</li>
+<a href="{% url 'customer_delete' customer.id %}" class="btn btn-outline-primary">Delete</a>
+<a href="#" class="btn btn-outline-primary">Edit</a>
+
+
   {% empty %}
-    <li>No customers found.</li>
+    <p>No customers found.</p>
   {% endfor %}
-</ul>
 </div>
 </div>
 {% endblock %}
