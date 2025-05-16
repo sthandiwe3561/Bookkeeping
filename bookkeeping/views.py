@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render,redirect,get_object_or_404
 
 from .models import Customer
@@ -42,7 +43,6 @@ def customers(request,post_id=None):
             customer.estate = estate_name
             customer.plot_no = plot_number
             customer.save()
-            success = "Customer updated successfully!"
        else:
             # Create new customer
             Customer.objects.create(
@@ -52,12 +52,9 @@ def customers(request,post_id=None):
                 estate=estate_name,
                 plot_no=plot_number
             )
-            success = "Customer added successfully!"
+       messages.success(request, "Customer added successfully!")
+       return redirect('customer_form')
 
-       return render(request, "bookkeeping/customers.html", {
-            'customers': Customer.objects.all(),
-            'success': success
-        })
 
     return render(request, "bookkeeping/customers.html", {
         'customers': customers_lists,
@@ -78,7 +75,7 @@ def customer_delete(request,post_id):
 
        #fetch all the list of the customers
     customers_lists = Customer.objects.all()
-    return render(request,"bookkeeping/customers.html",{'customers':customers_lists})
+    return redirect('customer_form')
 
 
 
