@@ -2,7 +2,7 @@
 {% block body %}
 <div class="customers">
 <h1>Customers Management</h1>
-<div class="form">
+<div class="form-container">
   {% if error %}
   <div class="alert alert-danger">{{ error }}</div>
 {% endif %}
@@ -42,27 +42,47 @@
            value="{{ post.plot_no|default:'' }}" />
   </div>
 
-  <button type="submit" class="btn btn-primary">
+  <button type="submit" class="btn submit-btn">
     {% if post %}Update{% else %}Add{% endif %}
   </button>
 </form>
 </div>
 
-<div class="customersList">
-  <h2>Customer List</h2>
-  {% for customer in customers %}
-    <h2>{{ customer.name }}</h2>
-    <li> {{ customer.email }} </li>
-    <li>{{ customer.phone_no }}</li>
-    <li>{{customer.estate}}</li>
-    <li>{{customer.plot_no}}</li>
-<a href="{% url 'customer_delete' customer.id %}" class="btn btn-outline-primary">Delete</a>
-<a href="{% url 'customer_form_edit' customer.id %}" class="btn btn-outline-primary">Edit</a>
+<div class="nameList">
+  <div class="customersList row">
+    
+    <!-- Sidebar List of Customer Names -->
+    <div class="names col-3" style="max-height: 500px; overflow-y: auto;">
+      <ul>
+        {% for names in customers %}
+          <li>
+            <a href="{% url 'customer_details' names.id %}">
+              <p>{{ names.name }}</p>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
 
+    <!-- Selected Customer Details -->
+    <div class="details col-6">
+      {% if customer_details %}
+        <ul>
+          <li>{{ customer_details.email }}</li>
+          <li>{{ customer_details.phone_no }}</li>
+          <li>{{ customer_details.estate }}</li>
+          <li>{{ customer_details.plot_no }}</li>
+        </ul>
 
-  {% empty %}
-    <p>No customers found.</p>
-  {% endfor %}
+        <a href="{% url 'customer_delete' customer_details.id %}" class="btn btn-outline-primary">Delete</a>
+        <a href="{% url 'customer_form_edit' customer_details.id %}" class="btn btn-outline-primary">Edit</a>
+      {% else %}
+        <p>Select a customer to view details.</p>
+      {% endif %}
+    </div>
+
+  </div>
 </div>
-</div>
+
+ 
 {% endblock %}

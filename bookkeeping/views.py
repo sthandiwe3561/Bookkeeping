@@ -67,6 +67,20 @@ def customers_list(request):
     customers_lists = Customer.objects.all()
     return render(request,"bookkeeping/customers.html",{'customers':customers_lists})
 
+
+def customer_list_view(request, post_id=None):
+    customers = Customer.objects.all()
+    customer_details = None
+
+    if post_id:
+        customer_details = get_object_or_404(Customer, id=post_id)
+
+    return render(request, "bookkeeping/customers.html", {
+        "customers": customers,
+        "customer_details": customer_details
+    })
+
+
 def customer_delete(request,post_id):
      #fecthing the users id     
     customers_lists = get_object_or_404(Customer, id=post_id)
