@@ -1,5 +1,8 @@
 from django.contrib import messages
 from django.shortcuts import render,redirect,get_object_or_404
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import CustomerSerializer
 
 from .models import Customer
 
@@ -14,6 +17,8 @@ def customers(request,post_id=None):
 
       #fetch all the list of the customers
     customers_lists = Customer.objects.all()
+    first_customer = customers_lists.first()
+
 
     if post_id:
         customer = get_object_or_404(Customer, id=post_id)
@@ -58,27 +63,23 @@ def customers(request,post_id=None):
 
     return render(request, "bookkeeping/customers.html", {
         'customers': customers_lists,
-        'post': customer
+        'post': customer,
+        'default_customer': first_customer
     })
     
 
-def customers_list(request):
+def customers_view(request):
     #fetch all the list of the customers
     customers_lists = Customer.objects.all()
-    return render(request,"bookkeeping/customers.html",{'customers':customers_lists})
+    first_customer = customers_lists.first()
+    print("First customer:", first_customer)
 
 
-def customer_list_view(request, post_id=None):
-    customers = Customer.objects.all()
-    customer_details = None
+    return render(request,"bookkeeping/customers.html",{'customers':customers_lists,        
+                                                        'default_customer': first_customer})
 
-    if post_id:
-        customer_details = get_object_or_404(Customer, id=post_id)
 
-    return render(request, "bookkeeping/customers.html", {
-        "customers": customers,
-        "customer_details": customer_details
-    })
+
 
 
 def customer_delete(request,post_id):

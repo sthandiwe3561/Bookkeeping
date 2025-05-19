@@ -56,7 +56,7 @@
       <ul>
         {% for names in customers %}
           <li>
-            <a href="{% url 'customer_details' names.id %}">
+            <a href="#">
               <p>{{ names.name }}</p>
             </a>
           </li>
@@ -65,21 +65,24 @@
     </div>
 
     <!-- Selected Customer Details -->
-    <div class="details col-6">
-      {% if customer_details %}
-        <ul>
-          <li>{{ customer_details.email }}</li>
-          <li>{{ customer_details.phone_no }}</li>
-          <li>{{ customer_details.estate }}</li>
-          <li>{{ customer_details.plot_no }}</li>
-        </ul>
+     <div class="details col-6" id="customer-details">
+  {% if default_customer %}
+  <ul>
+    <li>Email: <span id="email">{{ default_customer.email }}</span></li>
+    <li>Phone: <span id="phone">{{ default_customer.phone_no }}</span></li>
+    <li>Estate: <span id="estate">{{ default_customer.estate }}</span></li>
+    <li>Plot No: <span id="plot">{{ default_customer.plot_no }}</span></li>
+  </ul>
+  <div id="action-buttons" style="display: block;">
+    <a id="edit-btn" href="{% url 'customer_form_edit' default_customer.id %}" class="btn btn-outline-primary">Edit</a>
+    <a id="delete-btn" href="{% url 'customer_delete' default_customer.id %}" class="btn btn-outline-primary">Delete</a>
+  </div>
+  {% else %}
+  <p>Select a customer to view details.</p>
+  {% endif %}
+</div>
 
-        <a href="{% url 'customer_delete' customer_details.id %}" class="btn btn-outline-primary">Delete</a>
-        <a href="{% url 'customer_form_edit' customer_details.id %}" class="btn btn-outline-primary">Edit</a>
-      {% else %}
-        <p>Select a customer to view details.</p>
-      {% endif %}
-    </div>
+
 
   </div>
 </div>
