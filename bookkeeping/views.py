@@ -78,9 +78,11 @@ def customers_view(request):
     return render(request,"bookkeeping/customers.html",{'customers':customers_lists,        
                                                         'default_customer': first_customer})
 
-
-
-
+@api_view(['GET'])
+def customer_api(request, id):
+    customer = Customer.objects.get(id=id)
+    serializer = CustomerSerializer(customer)
+    return Response(serializer.data)
 
 def customer_delete(request,post_id):
      #fecthing the users id     

@@ -48,40 +48,39 @@
 </form>
 </div>
 
+<h2 class="customer-list">Customer List</h2>
+
 <div class="nameList">
   <div class="customersList row">
     
     <!-- Sidebar List of Customer Names -->
     <div class="names col-3" style="max-height: 500px; overflow-y: auto;">
       <ul>
-        {% for names in customers %}
+        {% for customer in customers %}
           <li>
-            <a href="#">
-              <p>{{ names.name }}</p>
-            </a>
+    <a class="customer-name"
+       data-id="{{ customer.id }}"
+       {% if forloop.first %}data-default="true"{% endif %}>
+       {{ customer.name }}
+    </a>
           </li>
         {% endfor %}
       </ul>
     </div>
-
-    <!-- Selected Customer Details -->
-     <div class="details col-6" id="customer-details">
-  {% if default_customer %}
+<div class="details col-6" id="customer-details">
+  <h2 id="names"></h2>
   <ul>
-    <li>Email: <span id="email">{{ default_customer.email }}</span></li>
-    <li>Phone: <span id="phone">{{ default_customer.phone_no }}</span></li>
-    <li>Estate: <span id="estate">{{ default_customer.estate }}</span></li>
-    <li>Plot No: <span id="plot">{{ default_customer.plot_no }}</span></li>
+    <li>Email: <span id="emails"></span></li>
+    <li>Phone: <span id="phones"></span></li>
+    <li>Estate: <span id="estates"></span></li>
+    <li>Plot No: <span id="plots"></span></li>
   </ul>
-  <div id="action-buttons" style="display: block;">
-    <a id="edit-btn" href="{% url 'customer_form_edit' default_customer.id %}" class="btn btn-outline-primary">Edit</a>
-    <a id="delete-btn" href="{% url 'customer_delete' default_customer.id %}" class="btn btn-outline-primary">Delete</a>
-  </div>
-  {% else %}
-  <p>Select a customer to view details.</p>
-  {% endif %}
-</div>
 
+  <div id="action-buttons" style="display: none;">
+    <a id="edit-btn" href="#" class="btn btn-outline-primary">Edit</a>
+    <a id="delete-btn" href="#" class="btn btn-outline-primary">Delete</a>
+  </div>
+</div>
 
 
   </div>
