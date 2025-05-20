@@ -155,6 +155,11 @@ opacity: 1;
 
 }
 
+.customers p{
+  text-align: center;
+  font-size: 30px;
+}
+
 h2.customer-list{
   text-align: center;
   font-size: 30px;

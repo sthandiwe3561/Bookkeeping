@@ -22,6 +22,7 @@ class User(AbstractUser):
   
 
 class Customer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="customer")
     name = models.CharField(max_length=100)
     email = models.EmailField()
     phone_no = models.CharField(max_length=15)
