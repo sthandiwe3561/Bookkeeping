@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse
 from django.db import IntegrityError
+from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import CustomerSerializer
@@ -77,13 +78,12 @@ def dashboard(request):
 def customers(request,post_id=None):
 
       #fetch all the list of the customers
-    customers_lists = Customer.objects.all()
+    customers_lists = Customer.objects.filter(user=request.user)
     first_customer = customers_lists.first()
 
 
     if post_id:
-        customer = get_object_or_404(Customer, id=post_id)
-
+           customer = get_object_or_404(Customer, id=post_id,user=request.user)
     else:
         customer = None
 
@@ -131,7 +131,7 @@ def customers(request,post_id=None):
 
 def customers_view(request):
     #fetch all the list of the customers
-    customers_lists = Customer.objects.all()
+    customers_lists = Customer.objects.filter(user=request.user)
     first_customer = customers_lists.first()
     print("First customer:", first_customer)
 
@@ -147,7 +147,7 @@ def customer_api(request, id):
 
 def customer_delete(request,post_id):
      #fecthing the users id     
-    customers_lists = get_object_or_404(Customer, id=post_id)
+    customers_lists = get_object_or_404(Customer, id=post_id,user=request.user)
 
     customers_lists.delete()
 
