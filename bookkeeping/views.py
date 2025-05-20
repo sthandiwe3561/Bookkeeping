@@ -24,7 +24,7 @@ def login_view(request):
         # Check if authentication successful
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect(reverse("index"))
+            return redirect("dashboard")
         else:
             return render(request, "bookkeeping/login.html", {
                 "message": "Invalid username and/or password."
@@ -32,6 +32,11 @@ def login_view(request):
     else:
         return render(request, "bookkeeping/login.html")
     
+ #logout   
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse("index"))
+
 
 #register
 def register(request):
@@ -56,11 +61,15 @@ def register(request):
                 "message": "Username already taken."
             })
         login(request, user)
-        return redirect("profile")
+        return redirect("dashboard")
     else:
         return render(request, "bookkeeping/register.html")
     
 #INDEX FUNCTION
+def index(request):
+    return render(request, "bookkeeping/index.html")
+
+#dashboard
 def dashboard(request):
     return render(request, "bookkeeping/dashboard.html")
 

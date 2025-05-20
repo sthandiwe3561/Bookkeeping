@@ -1,6 +1,6 @@
 {% extends "bookkeeping/layout.html" %} 
 {% block body %}
-<div class="register">
+<div class="register-box">
     <h2>Register</h2>
 
     {% if message %}
@@ -8,7 +8,8 @@
     {% endif %}
 
     <form action="{% url 'register' %}" method="post">
-      {% csrf_token %}
+        {% csrf_token %}
+
       <div class="form-group">
         <input
           class="form-control"
@@ -42,10 +43,10 @@
           placeholder="Confirm Password"
         />
       </div>
-      <input class="btn btn-primary" type="submit" value="Register" />
+            <button class="login-button" type="submit">Login</button>
     </form>
     <div class="form_link">
-      Already have an account? <a href="#">Log In here.</a>
+      Already have an account? <a href="{% url 'login' %}">Log In here.</a>
     </div>
 </div>
 {% endblock %}

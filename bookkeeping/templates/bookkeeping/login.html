@@ -1,7 +1,7 @@
 {% extends "bookkeeping/layout.html" %} 
 {% block body %}
-<div class="login">
-      <h2>Login</h2>
+<div class="login-box">
+      <h2 class="login-tittle">Login</h2>
 
     {% if message %}
     <div>{{ message }}</div>
@@ -26,7 +26,7 @@
           placeholder="Password"
         />
       </div>
-      <input class="btn btn-primary" type="submit" value="Login" />
+      <button class="login-button" type="submit">Login</button>
     </form>
     <div class="form_link">
       Don't have an account? <a href="{% url 'register' %}">Register here.</a>

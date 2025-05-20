@@ -50,6 +50,7 @@
 
 <h2 class="customer-list">Customer List</h2>
 
+{% if customers %}
 <div class="nameList">
   <div class="customersList row">
     
@@ -85,6 +86,9 @@
 
   </div>
 </div>
+{% else %}
+<p>No names</p>
+{% endif %}
 
  
 {% endblock %}

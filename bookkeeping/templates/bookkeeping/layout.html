@@ -21,7 +21,7 @@
       <ul>
         {% if user.is_authenticated %}
         <li>
-          <a href="#">
+          <a href="{% url 'dashboard' %}">
           <i class="bi bi-grid-3x3-gap-fill"></i>
           <span class="nav-item">Dashboard</span>
         </a>
@@ -71,15 +71,15 @@
         <span class="tool">Audit Mode</span>
       </li>
          <li>
-          <a href="#">
-        <i class="bi bi-box-arrow-right"></i> 
+          <a href="{% url 'logout' %}">
+        <i class="bi bi-box-arrow-left"></i> 
           <span class="nav-item">Logout</span>
         </a>
         <span class="tool">Logout</span>
       </li>
       {% else %}
           <li>
-          <a href="#">
+          <a href="{% url 'login' %}">
             <i class="bi bi-box-arrow-in-right"></i>
           <span class="nav-item">Login</span>
         </a>
@@ -87,10 +87,10 @@
       </li>
           <li>
           <a href="{% url 'register' %}">
-            <i class="bi bi-person-plus"></i> Sign Up
+            <i class="bi bi-person-plus"></i>
           <span class="nav-item">SignUp</span>
         </a>
-        <span class="tool">SignUp/span>
+        <span class="tool">SignUp</span>
       </li>
       {% endif %}
       </ul>
