@@ -1,13 +1,41 @@
 from django.contrib import messages
 from django.shortcuts import render,redirect,get_object_or_404
+from django.db import IntegrityError
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import CustomerSerializer
 
-from .models import Customer
+from .models import Customer,User
 
 
 # Create your views here.
+#register
+def register(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        email = request.POST["email"]
+
+        # Ensure password matches confirmation
+        password = request.POST["password"]
+        confirmation = request.POST["confirmation"]
+        if password != confirmation:
+            return render(request, "bookkeeping/register.html", {
+                "message": "Passwords must match."
+            })
+
+        # Attempt to create new user
+        try:
+            user = User.objects.create_user(username, email, password)
+            user.save()
+        except IntegrityError:
+            return render(request, "bookkeeping/register.html", {
+                "message": "Username already taken."
+            })
+        login(request, user)
+        return redirect("profile")
+    else:
+        return render(request, "bookkeeping/register.html")
+    
 #INDEX FUNCTION
 def dashboard(request):
     return render(request, "bookkeeping/dashboard.html")
