@@ -83,7 +83,7 @@ def customers(request,post_id=None):
 
 
     if post_id:
-           customer = get_object_or_404(Customer, id=post_id,user=request.user)
+        customer = get_object_or_404(Customer, id=post_id,user=request.user)
     else:
         customer = None
 
@@ -109,18 +109,23 @@ def customers(request,post_id=None):
             customer.estate = estate_name
             customer.plot_no = plot_number
             customer.save()
+            messages.success(request, "Customer updated successfully!")
+            return redirect(reverse('customer_form') + f'?highlight_id={customer.id}') #type: ignore
+          
        else:
             # Create new customer
-            Customer.objects.create(
+           new_customer: Customer = Customer.objects.create(
                 name=name,
                 email=email,
                 phone_no=phone_number,
                 estate=estate_name,
-                plot_no=plot_number
+                plot_no=plot_number,
+                user=request.user  # Make sure to assign the current user
+
             )
        messages.success(request, "Customer added successfully!")
-       return redirect('customer_form')
-
+       return redirect(reverse('customer_form') + f'?highlight_id={new_customer.id}') #type: ignore
+    
 
     return render(request, "bookkeeping/customers.html", {
         'customers': customers_lists,
@@ -145,15 +150,31 @@ def customer_api(request, id):
     serializer = CustomerSerializer(customer)
     return Response(serializer.data)
 
-def customer_delete(request,post_id):
-     #fecthing the users id     
-    customers_lists = get_object_or_404(Customer, id=post_id,user=request.user)
+def customer_delete(request, post_id):
+    # Get the customer to delete (make sure it's the current user's)
+    customer_to_delete = get_object_or_404(Customer, id=post_id, user=request.user)
 
-    customers_lists.delete()
+    # Try to get the next customer (by ID)
+    next_customer = Customer.objects.filter(user=request.user, id__gt=post_id).order_by('id').first()
 
-       #fetch all the list of the customers
-    customers_lists = Customer.objects.all()
-    return redirect('customer_form')
+    # If there’s no next one, try the previous one
+    if not next_customer:
+        next_customer = Customer.objects.filter(user=request.user, id__lt=post_id).order_by('-id').first()
+
+    # Store ID for redirect highlight
+    highlight_id = next_customer.id if next_customer else "" #type: ignore
+
+    # Delete the customer
+    customer_to_delete.delete()
+
+    # Redirect with highlight_id (if any)
+    if highlight_id:
+        return redirect(reverse('customer_form') + f'?highlight_id={highlight_id}')
+    else:
+        return redirect('customer_form')
+
+
+
 
 
 

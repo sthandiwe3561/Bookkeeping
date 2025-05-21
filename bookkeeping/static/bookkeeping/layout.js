@@ -46,4 +46,15 @@ function btnButton(){
       loadCustomerDetails(id);
     });
   });
+
+  //
+   const params = new URLSearchParams(window.location.search);
+    const highlightId = params.get("highlight_id");
+    if (highlightId) {
+      const el = document.getElementById("customer-" + highlightId);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        el.style.background = "#ffffcc";  // Optional highlight
+      }
+    }
 })
