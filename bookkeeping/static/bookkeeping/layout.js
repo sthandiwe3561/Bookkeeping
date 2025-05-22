@@ -57,4 +57,35 @@ function btnButton(){
         el.style.background = "#ffffcc";  // Optional highlight
       }
     }
+
+  //service history form navigation
+  const serviceTypeSelect = document.getElementById('serviceTypeSelect');
+const normalFields = document.getElementById('normalFields');
+const specialFields = document.getElementById('specialFields');
+
+function updateFormFields() {
+  const selected = serviceTypeSelect.value;
+
+  // Reset visibility
+  normalFields.style.display = 'none';
+  specialFields.style.display = 'none';
+
+
+  if (selected === 'normal') {
+    normalFields.style.display = 'block';
+  } else if (selected === 'special') {
+    specialFields.style.display = 'block';
+  } 
+}
+
+serviceTypeSelect.addEventListener('change', updateFormFields);
+
+// Run on load
+updateFormFields();
+
+// Pre-fill today's date for the date input in service history form
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('serviceDateInput').value = today;
+
+
 })

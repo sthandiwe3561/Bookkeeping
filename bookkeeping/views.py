@@ -9,7 +9,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import CustomerSerializer
 
-from .models import Customer,User
+from .models import Customer,User,ServiceRecord
 
 
 # Create your views here.
@@ -172,6 +172,53 @@ def customer_delete(request, post_id):
         return redirect(reverse('customer_form') + f'?highlight_id={highlight_id}')
     else:
         return redirect('customer_form')
+
+#services history
+def add_service(request):
+    customers = Customer.objects.filter(user=request.user)
+
+    if request.method == "POST":
+        #fetching the data from the input
+        service_type = request.POST.get("service_type", "normal")  # Default to normal if not specified
+        # Common fields
+        description = request.POST.get("description")
+        price = request.POST.get("price")
+        service_date = request.POST.get("service_date")
+        #normals service
+        customer_id = request.POST.get("customer")
+        special_load = request.POST.get("special_load")
+        #specail service
+        client_name = request.POST.get("client_name")
+        client_phone = request.POST.get("client_phone")
+
+        service = ServiceRecord(
+            service_type=service_type,
+            service_description=description,
+            price=price,
+            service_date=service_date,
+        )
+
+        if service_type == "normal":
+            customer = Customer.objects.filter(id=customer_id, user=request.user).first()
+            service.customer = customer
+            service.customer_name_backup = customer.name if customer else ""
+            service.special_load = special_load or ""
+        else:
+            service.client_name = client_name
+            service.client_phone = client_phone
+
+        service.save()
+
+        action = request.POST.get("action")
+        if action == "save_continue":
+            return redirect("add_service")  # same page to add more
+        else:
+            return redirect("add_service")
+
+    return render(request, "bookkeeping/service_history.html", {
+        "customers": customers,
+        "post": None,
+    })
 
 
 

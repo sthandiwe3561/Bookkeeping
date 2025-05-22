@@ -9,6 +9,7 @@ urlpatterns = [
     path("login", views.login_view, name="login"),
     path("dashboard", views.dashboard, name="dashboard"),
     path("customer_form", views.customers, name="customer_form"),
+    path("add_service", views.add_service, name="add_service"),
     path('customers/', views.customers_view, name='customers'),
     path("customers/edit/<int:post_id>/", views.customers, name="customer_form_edit"),
     path('api/customers/<int:id>/', views.customer_api, name='customer_api'),

@@ -62,7 +62,7 @@
     <a class="customer-name"
        data-id="{{ customer.id }}"
        {% if forloop.first %}data-default="true"{% endif %}>
-       {{ customer.name }}
+       {{ customer.name|title }}
     </a>
           </li>
         {% endfor %}
