@@ -49,12 +49,15 @@ function btnButton(){
 
   //
    const params = new URLSearchParams(window.location.search);
-    const highlightId = params.get("highlight_id");
+    const highlightId = params.get("highlight");
     if (highlightId) {
-      const el = document.getElementById("customer-" + highlightId);
+      const el = document.getElementById("highlight-" + highlightId);
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "center" });
         el.style.background = "#ffffcc";  // Optional highlight
+           setTimeout(() => {
+        el.style.backgroundColor = "";  // Remove highlight after a moment
+      }, 3000);
       }
     }
 
@@ -67,7 +70,7 @@ function updateFormFields() {
   const selected = serviceTypeSelect.value;
 
   // Reset visibility
-  normalFields.style.display = 'none';
+  normalFields.style.display = 'block';
   specialFields.style.display = 'none';
 
 
@@ -75,6 +78,8 @@ function updateFormFields() {
     normalFields.style.display = 'block';
   } else if (selected === 'special') {
     specialFields.style.display = 'block';
+    normalFields.style.display = 'none';
+
   } 
 }
 

@@ -1,82 +1,158 @@
 {% extends "bookkeeping/layout.html" %} 
 {% block body %}
-<div class="service_history">
-  <h1>Service History</h1>
+<div class="container service_history">
+  <h1 class="mb-4">Service History</h1>
 
+  <h2 class="mb-4">New Service</h2>
 
-<h2>New Service</h2>
-<div class="form">
-<!-- Service Form -->
-<form id="serviceForm" action="" method="post">
+  <form id="serviceForm" action="" method="post">
     {% csrf_token %}
 
-<!-- Filter Toggle -->
-<select id="serviceTypeSelect" name="service_type" class="form-select mb-3">
-  <option value="" selected disabled>Select Service</option>
-  <option value="normal" selected>Normal Service</option>
-  <option value="special">Special Service</option>
-</select>
+    <!-- Service Type -->
+    <div class="mb-4">
+      <label for="serviceTypeSelect" class="form-label">Filter By:</label>
+      <select id="serviceTypeSelect" name="service_type" class="form-select">
+        <option value="" {% if not post %}selected{% endif %} disabled>Select Service</option>
+        <option value="normal" {% if post and post.service_type == "normal" %}selected{% endif %}>Normal Service</option>
+        <option value="special" {% if post and post.service_type == "special" %}selected{% endif %}>Special Service</option>
+      </select>
+    </div>
 
-  <!-- Normal Service Section -->
-  <div id="normalFields" class="form-section">
-    <label for="customer">Customer</label>
-    <select name="customer" id="customer" class="form-select">
-      <option value="" selected disabled>Select a customer</option>
-      {% for customer in customers %}
-      <!-- Fill with your customer list -->
-      <option value="{{customer.id}}">{{ customer.name|title }}</option>
-      {% endfor %}
-    </select>
-     <label for="special_load">Special Load</label>
-     <select id="special_load" name="special_load" class="form-select mb-3">
-  <option value="No" selected>No</option>
-  <option value="Yes">Yes</option>
-</select>
-  </div>
+    <!-- Normal Service Section -->
+    <div id="normalFields" class="form-section mb-4">
+      <div class="mb-3">
+        <label for="customer" class="form-label">Customer:</label>
+        <select name="customer" id="customer" class="form-select">
+          <option value="" selected disabled>Select a customer</option>
+          {% for customer in customers %}
+          <option value="{{customer.id}}" {% if post and post.customer and post.customer.id == customer.id %}selected{% endif %}>
+            {{ customer.name|title }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
 
-  <!-- Special Service Fields -->
-  <div id="specialFields" class="form-section" style="display: none;">
-    <label for="client_name">Client Name</label>
-    <input type="text" name="client_name" class="form-control">
-    
-    <label for="client_phone">Client Phone</label>
-    <input type="text" name="client_phone" class="form-control">
-  </div>
+      <div class="mb-3">
+        <label for="special_load" class="form-label">Special Load:</label>
+        <select id="special_load" name="special_load" class="form-select">
+          <option value="No" {% if post and post.special_load == "No" %}selected{% endif %}>No</option>
+          <option value="Yes" {% if post and post.special_load == "Yes" %}selected{% endif %}>Yes</option>
+        </select>
+      </div>
+    </div>
 
-  <!-- Common Fields -->
-  <label for="description">Service Description</label>
-  <textarea name="description" class="form-control"></textarea>
+    <!-- Special Service Section -->
+    <div id="specialFields" class="form-section mb-4" style="display: none;">
+      <div class="mb-3">
+        <label for="client_name" class="form-label">Client Name:</label>
+        <input type="text" name="client_name" class="form-control" value="{{ post.client_name|default:'' }}">
+      </div>
 
-  <label for="price">Price</label>
-  <input type="number" name="price" class="form-control">
+      <div class="mb-3">
+        <label for="client_phone" class="form-label">Client Phone:</label>
+        <input type="text" name="client_phone" class="form-control" value="{{ post.client_phone|default:'' }}">
+      </div>
+    </div>
 
-  <label for="service_date">Service Date</label>
-  <input type="date" name="service_date" id="serviceDateInput" class="form-control">
+    <!-- Common Fields -->
+    <div class="mb-3">
+      <label for="description" class="form-label">Service Description:</label>
+      <textarea name="description" class="form-control">{{ post.service_description }}</textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="price" class="form-label">Price:</label>
+      <input type="number" name="price" class="form-control" value="{{ post.price|default:'' }}">
+    </div>
+
+    <div class="mb-4">
+      <label for="service_date" class="form-label">Service Date:</label>
+      <input type="date" name="service_date" id="serviceDateInput" class="form-control" value="{{ post.service_date|default:'' }}">
+    </div>
+
+    <!-- Buttons -->
+    <div class="d-flex gap-3">
+      <button type="submit" name="action" value="{% if post %}update{% else %}save{% endif %}" class="btn btn-primary">
+        {% if post %}Update{% else %}Save{% endif %}
+      </button>
+
+      {% if not post %}
+      <button type="submit" name="action" value="save_continue" class="btn btn-secondary">
+        Save and Continue
+      </button>
+      {% endif %}
+    </div>
+  </form>
 
 
-<!-- Main Submit Button -->
-<button type="submit" name="action" value="{% if post %}update{% else %}save{% endif %}" class="btn btn-primary mt-3">
-  {% if post %}Update{% else %}Save{% endif %}
-</button>
-
-<!-- Only show this if adding a new item -->
-{% if not post %}
-  <button type="submit" name="action" value="save_continue" class="btn btn-secondary mt-3">
-    Save and Continue
-  </button>
-{% endif %}
-
-</form>
-</div>
 
 <div class="service_list">
   <h2>Services List</h2>
   {% if services %}
+      <p>Filter By:</p>
+  <form method="get" action="{% url 'service_list_filter' %}" class="mb-4 d-flex gap-2">
+  <input type="text" name="name" placeholder="Search by name" class="form-control" value="{{ request.GET.name }}">
+  
+  <input type="month" name="month" class="form-control" value="{{ request.GET.month }}">
+  
+  <button type="submit" class="btn btn-primary">Filter</button>
+  <a href="{% url 'service_list_filter' %}" class="btn btn-secondary">Clear</a>
+</form>
+
+    <table class="bids-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Name</th>
+          <th>Type of service</th>
+          <th>Description</th>
+          <th>Special load</th>
+          <th>Price</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for service in services %}
+          <tr id="highlight-service-{{ service.id }}">
+            <td>{{ service.service_date }}</td>
+            <td>
+              {% if service.service_type == "normal" %}
+              {{ service.customer_name_backup|title  }}
+              {% else %}
+              {{service.client_name|title}}
+              {% endif %}
+            </td>
+            <td>{{ service.service_type|title  }}</td>
+            <td>{{ service.service_description|title  }}</td>
+            <td>
+             {% if service.special_load %}
+             {{ service.special_load|title }}
+             {% else %}
+             <span class="text-muted">••••</span>
+             {% endif %}
+             </td>
+            <td>R {{ service.price }}</td>
+            <td>
+                 <div class="d-flex gap-2">
+                  <a href="{% url 'service_edit' service.id %}" class="btn btn-sm btn-primary">
+                  <i class="bi bi-pencil-square"></i> Edit
+                  </a>
+
+                  <a href="{% url 'service_delete' service.id %}" class="btn btn-sm btn-danger">
+                  <i class="bi bi-trash"></i> Delete
+                  </a>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   {% else %}
-  <p>No Service Available</p>
+    <p>No Service Available</p>
   {% endif %}
 </div>
 
 </div>
+
 
 {% endblock %}

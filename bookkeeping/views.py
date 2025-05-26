@@ -5,6 +5,8 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from datetime import datetime
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import CustomerSerializer
@@ -110,7 +112,7 @@ def customers(request,post_id=None):
             customer.plot_no = plot_number
             customer.save()
             messages.success(request, "Customer updated successfully!")
-            return redirect(reverse('customer_form') + f'?highlight_id={customer.id}') #type: ignore
+            return redirect(reverse('customer_form') + f'?highlight=customer-{customer.id}') #type: ignore
           
        else:
             # Create new customer
@@ -124,7 +126,7 @@ def customers(request,post_id=None):
 
             )
        messages.success(request, "Customer added successfully!")
-       return redirect(reverse('customer_form') + f'?highlight_id={new_customer.id}') #type: ignore
+       return redirect(reverse('customer_form') + f'?highlight=customer-{new_customer.id}') #type: ignore
     
 
     return render(request, "bookkeeping/customers.html", {
@@ -169,13 +171,15 @@ def customer_delete(request, post_id):
 
     # Redirect with highlight_id (if any)
     if highlight_id:
-        return redirect(reverse('customer_form') + f'?highlight_id={highlight_id}')
+        return redirect(reverse('customer_form') + f'?highlight=customer-{highlight_id}')
     else:
         return redirect('customer_form')
 
 #services history
 def add_service(request):
     customers = Customer.objects.filter(user=request.user)
+    services = ServiceRecord.objects.all()
+
 
     if request.method == "POST":
         #fetching the data from the input
@@ -213,15 +217,99 @@ def add_service(request):
         if action == "save_continue":
             return redirect("add_service")  # same page to add more
         else:
-            return redirect("add_service")
+            return redirect(reverse('add_service') + f'?highlight=service-{service.id}') #type: ignore
 
     return render(request, "bookkeeping/service_history.html", {
         "customers": customers,
         "post": None,
+        "services":services,
     })
 
 
+def service_delete(request, post_id):
+    # Get the customer to delete (make sure it's the current user's)
+    service_to_delete = get_object_or_404(ServiceRecord, id=post_id)
 
+    # Try to get the next customer (by ID)
+    next_service = ServiceRecord.objects.filter(id__gt=post_id).order_by('id').first()
+
+    # If there’s no next one, try the previous one
+    if not next_service:
+        next_service = ServiceRecord.objects.filter(id__lt=post_id).order_by('-id').first()
+
+    # Store ID for redirect highlight
+    highlight_id = next_service.id if next_service else "" #type: ignore
+
+    # Delete the customer
+    service_to_delete.delete()
+
+    # Redirect with highlight_id (if any)
+    if highlight_id:
+        return redirect(reverse('add_service') + f'?highlight=service-{highlight_id}')
+    else:
+        return redirect('add_service')
+
+
+def edit_service(request, record_id):
+    service = get_object_or_404(ServiceRecord, id=record_id)
+    customers = Customer.objects.filter(user=request.user)
+
+    if request.method == "POST":
+        service.service_type = request.POST.get("service_type", "normal")
+        service.service_description = request.POST.get("description")
+        service.price = request.POST.get("price")
+        service.service_date = request.POST.get("service_date")
+
+        if service.service_type == "normal":
+            customer_id = request.POST.get("customer")
+            special_load = request.POST.get("special_load")
+            customer = Customer.objects.filter(id=customer_id, user=request.user).first()
+            service.customer = customer
+            service.customer_name_backup = customer.name if customer else ""
+            service.special_load = special_load or ""
+            service.client_name = ""
+            service.client_phone = ""
+        else:
+            service.client_name = request.POST.get("client_name")
+            service.client_phone = request.POST.get("client_phone")
+            service.customer = None
+            service.customer_name_backup = ""
+            service.special_load = ""
+
+        service.save()
+        return redirect(reverse('add_service') + f'?highlight=service-{service.id}') #type: ignore
+
+    return render(request, "bookkeeping/service_history.html", {
+        "post": service,
+        "customers": customers
+    })
+
+
+def service_list_filter(request):
+    services = ServiceRecord.objects.all()
+
+    name_query = request.GET.get("name", "").strip()
+    month_query = request.GET.get("month", "").strip()
+
+    if name_query:
+        services = services.filter(
+            Q(customer_name_backup__icontains=name_query) |
+            Q(client_name__icontains=name_query)
+        )
+
+    if month_query:
+        try:
+            year, month = map(int, month_query.split("-"))
+            services = services.filter(
+                service_date__year=year,
+                service_date__month=month
+            )
+        except ValueError:
+            pass  # Invalid input — skip filter
+
+    return render(request, "bookkeeping/service_history.html", {
+        "services": services,
+    })
 
 
 

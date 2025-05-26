@@ -58,7 +58,7 @@
     <div class="names col-3" style="max-height: 500px; overflow-y: auto;">
       <ul>
         {% for customer in customers %}
-          <li id="customer-{{ customer.id }}">
+          <li id="highlight-customer-{{ customer.id }}">
     <a class="customer-name"
        data-id="{{ customer.id }}"
        {% if forloop.first %}data-default="true"{% endif %}>

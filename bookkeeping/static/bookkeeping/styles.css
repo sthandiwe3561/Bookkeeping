@@ -416,3 +416,82 @@ h2.customer-list{
   background-color: #0056b3;
 }
 
+/*service history list*/
+  .service_list {
+    margin-top: 30px;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+
+  .bids-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .bids-table th,
+  .bids-table td {
+    padding: 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .bids-table thead tr {
+    background-color: #f4f4f4;
+    border-bottom: 2px solid #ccc;
+  }
+
+  .bids-table tbody tr:nth-child(even) {
+    background-color: #fafafa;
+  }
+
+  .bids-table th {
+    border-right: 1px solid #ccc;
+  }
+
+  .bids-table td {
+    border-right: 1px solid #eee;
+  }
+
+  .bids-table th:last-child,
+  .bids-table td:last-child {
+    border-right: none;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .action-buttons button {
+    padding: 6px 10px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .edit-btn {
+    background-color: #007bff;
+  }
+
+  .edit-btn:hover {
+    background-color: #0056b3;
+  }
+
+  .delete-btn {
+    background-color: #dc3545;
+  }
+
+  .delete-btn:hover {
+    background-color: #b02a37;
+  }
+
+  /*service history*/
+  .service_history h1{
+    text-align: center;
+  }

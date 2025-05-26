@@ -14,7 +14,9 @@ urlpatterns = [
     path("customers/edit/<int:post_id>/", views.customers, name="customer_form_edit"),
     path('api/customers/<int:id>/', views.customer_api, name='customer_api'),
     path('customers/delete/<int:post_id>/', views.customer_delete, name='customer_delete'),
-
+    path('services_delete/<int:post_id>/', views.service_delete, name='service_delete'),
+    path("services_edit/<int:record_id>/", views.edit_service, name="service_edit"),
+    path("service_list_fiilter",views.service_list_filter, name="service_list_filter")
 
     
 ]
