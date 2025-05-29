@@ -1,0 +1,19 @@
+{% extends "bookkeeping/layout.html" %} 
+{% block body %}
+<h1>Generate Invoice</h1>
+ <div class="names">
+        <label for="service" class="form-label">Select Name:</label>
+        <select name="service" id="service" class="form-select">
+          <option value="" selected disabled>Select a Name</option>
+          {% for name in services %}
+          <option value="">
+            {% if name.service_type == "normal" %}
+              {{ name.customer_name_backup|title  }}
+              {% else %}
+              {{name.client_name|title}}
+              {% endif %}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+{% endblock %}
