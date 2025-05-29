@@ -45,29 +45,29 @@
     <div id="specialFields" class="form-section mb-4" style="display: none;">
       <div class="mb-3">
         <label for="client_name" class="form-label">Client Name:</label>
-        <input type="text" name="client_name" class="form-control" value="{{ post.client_name|default:'' }}">
+        <input type="text" id="client_name" name="client_name" class="form-control" autocomplete="name" value="{{ post.client_name|default:'' }}">
       </div>
 
       <div class="mb-3">
         <label for="client_phone" class="form-label">Client Phone:</label>
-        <input type="text" name="client_phone" class="form-control" value="{{ post.client_phone|default:'' }}">
+        <input type="tel" id="client_phone" name="client_phone" autocomplete="tel" class="form-control" value="{{ post.client_phone|default:'' }}">
       </div>
     </div>
 
     <!-- Common Fields -->
     <div class="mb-3">
       <label for="description" class="form-label">Service Description:</label>
-      <textarea name="description" class="form-control">{{ post.service_description }}</textarea>
+      <textarea name="description" autocomplete="off" id="description" class="form-control">{{ post.service_description }}</textarea>
     </div>
 
     <div class="mb-3">
       <label for="price" class="form-label">Price:</label>
-      <input type="number" name="price" class="form-control" value="{{ post.price|default:'' }}">
+      <input type="number" id="price" name="price" autocomplete="off" class="form-control" value="{{ post.price|default:'' }}">
     </div>
 
     <div class="mb-4">
-      <label for="service_date" class="form-label">Service Date:</label>
-      <input type="date" name="service_date" id="serviceDateInput" class="form-control" value="{{ post.service_date|default:'' }}">
+      <label for="serviceDateInput" class="form-label">Service Date:</label>
+      <input type="date" name="service_date" autocomplete="off" id="serviceDateInput" class="form-control" value="{{ post.service_date|default:'' }}">
     </div>
 
     <!-- Buttons -->
@@ -90,15 +90,16 @@
   <h2>Services List</h2>
   {% if services %}
       <p>Filter By:</p>
-  <form method="get" action="{% url 'service_list_filter' %}" class="mb-4 d-flex gap-2">
+  <form method="get" action="{% url 'service_list_filter' %}#results" class="mb-4 d-flex gap-2">
   <input type="text" name="name" placeholder="Search by name" class="form-control" value="{{ request.GET.name }}">
   
   <input type="month" name="month" class="form-control" value="{{ request.GET.month }}">
   
   <button type="submit" class="btn btn-primary">Filter</button>
-  <a href="{% url 'service_list_filter' %}" class="btn btn-secondary">Clear</a>
+  <a href="{% url 'service_list_filter' %}#results" class="btn btn-secondary">Clear</a>
 </form>
 
+<a id="results"></a>
     <table class="bids-table">
       <thead>
         <tr>

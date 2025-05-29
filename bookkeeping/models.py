@@ -27,10 +27,28 @@ class Customer(models.Model):
     email = models.EmailField()
     phone_no = models.CharField(max_length=15)
     estate = models.CharField(max_length=100)
-    plot_no = models.IntegerField()
+    plot_no = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.name
+    
+class Invoice(models.Model):
+    customer = models.ForeignKey(Customer, null=True, blank=True, on_delete=models.SET_NULL)
+    client_name = models.CharField(max_length=255, blank=True)  # For special service types
+    date_issued = models.DateField(auto_now_add=True)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('paid', 'Paid'),
+        ('unpaid', 'Unpaid'),
+    ]
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
+
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Invoice #{self.pk} - {self.customer.name if self.customer else self.client_name}"
 
 class ServiceRecord(models.Model):
     SERVICE_TYPE_CHOICES = [
@@ -52,9 +70,11 @@ class ServiceRecord(models.Model):
     service_description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     service_date = models.DateField(auto_now_add=True)
+    invoice = models.ForeignKey(Invoice, null=True, blank=True, on_delete=models.SET_NULL, related_name="services")
+
 
     def __str__(self):
         if self.service_type == 'normal':
             return f"{self.customer.name if self.customer else self.customer_name_backup} on {self.service_date}"
         return f"Special - {self.client_name} on {self.service_date}"
-    
+

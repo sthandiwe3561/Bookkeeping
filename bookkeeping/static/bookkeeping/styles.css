@@ -422,6 +422,9 @@ h2.customer-list{
     padding: 20px;
     font-family: Arial, sans-serif;
   }
+  .service_list h2{
+    text-align: center;
+  }
 
   .bids-table {
     width: 100%;
