@@ -1,19 +1,42 @@
 {% extends "bookkeeping/layout.html" %} 
 {% block body %}
 <h1>Generate Invoice</h1>
- <div class="names">
-        <label for="service" class="form-label">Select Name:</label>
-        <select name="service" id="service" class="form-select">
-          <option value="" selected disabled>Select a Name</option>
-          {% for name in services %}
-          <option value="">
-            {% if name.service_type == "normal" %}
-              {{ name.customer_name_backup|title  }}
-              {% else %}
-              {{name.client_name|title}}
-              {% endif %}
-          </option>
-          {% endfor %}
-        </select>
-      </div>
+<div class="names">
+  <label for="service" class="form-label">Select Name:</label>
+  <select name="service" id="service" class="form-select" {% if not services %}disabled{% endif %}>
+    {% if services %}
+      <option value="" selected disabled>Select a Name</option>
+      {% for name in services %}
+        <option value="{% if name.service_type == 'normal' %}{{ name.customer_name_backup }}{% else %}{{ name.client_name }}{% endif %}" 
+        data-type="{{ name.service_type }}">
+          {% if name.service_type == "normal" %}
+            {{ name.customer_name_backup|title }}
+          {% else %}
+            {{ name.client_name|title }}
+          {% endif %}
+        </option>
+      {% endfor %}
+    {% else %}
+      <option value="">No unbilled services available</option>
+    {% endif %}
+  </select>
+</div>
+<div class="services_available" style="display: none;">
+ <form method="POST" action="#">
+  {% csrf_token %}
+  
+  <label>
+    <input type="checkbox" id="select-all-services"> Select All
+  </label>
+
+  <select name="selected_services" id="service-list" multiple class="form-select">
+    <!-- Options will be added by JavaScript -->
+  </select>
+
+  <button type="submit">Submit Selected Services</button>
+</form>
+
+</div>
+
+<div class="invoices_available"></div>
 {% endblock %}

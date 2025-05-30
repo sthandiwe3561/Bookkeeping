@@ -66,6 +66,8 @@ function btnButton(){
 const normalFields = document.getElementById('normalFields');
 const specialFields = document.getElementById('specialFields');
 
+
+if (serviceTypeSelect && normalFields && specialFields){
 function updateFormFields() {
   const selected = serviceTypeSelect.value;
 
@@ -83,14 +85,70 @@ function updateFormFields() {
   } 
 }
 
+
 serviceTypeSelect.addEventListener('change', updateFormFields);
 
 // Run on load
 updateFormFields();
+}
 
+
+//showing all the services available for invoice generator
+//view customer details
+const select = document.getElementById("service");
+
+if (select) {
+  select.addEventListener("change", function () {
+    const selectedOption = select.options[select.selectedIndex];
+    const name = selectedOption.value;
+    const type = selectedOption.getAttribute("data-type");
+
+    console.log("Selected:", { name, type });
+
+    fetch(`/api/service-by-name/?name=${encodeURIComponent(name)}`)
+      .then(response => response.json())
+      .then(data => {
+        const serviceList = document.getElementById("service-list");
+        serviceList.innerHTML = ""; // Clear previous options
+
+        if (data.length === 0) {
+          const emptyOption = document.createElement("option");
+          emptyOption.disabled = true;
+          emptyOption.textContent = "No services found";
+          serviceList.appendChild(emptyOption);
+        } else {
+          data.forEach(service => {
+            const option = document.createElement("option");
+            option.value = service.id; // assuming `id` is returned in API
+            option.textContent = `${service.service_description} - R${service.price}`;
+            serviceList.appendChild(option);
+          });
+        }
+
+        document.querySelector(".services_available").style.display = "block";
+      })
+      .catch(error => {
+        console.error("Error fetching services:", error);
+      });
+  });
+}
+
+//makethe select all in service invoices to select allservices
+const selectAllCheckbox = document.getElementById("select-all-services");
+
+selectAllCheckbox.addEventListener("change", () => {
+  const options = document.getElementById("service-list").options;
+  for (let option of options) {
+    option.selected = selectAllCheckbox.checked;
+  }
+});
+
+  
 // Pre-fill today's date for the date input in service history form
 const today = new Date().toISOString().split('T')[0];
-document.getElementById('serviceDateInput').value = today;
-
+const dateInput = document.getElementById('serviceDateInput')
+if (dateInput) {
+  dateInput.value = today;
+}
 
 })

@@ -9,7 +9,7 @@ from django.db.models import Q
 from datetime import datetime
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import CustomerSerializer
+from .serializers import CustomerSerializer,ServiceRecordSerializer
 
 from .models import Customer,User,ServiceRecord
 
@@ -205,7 +205,7 @@ def add_service(request):
         if service_type == "normal":
             customer = Customer.objects.filter(id=customer_id, user=request.user).first()
             service.customer = customer
-            service.customer_name_backup = customer.name if customer else ""
+            service.customer_name_backup = customer.name if customer else "" #type: ignore
             service.special_load = special_load or ""
         else:
             service.client_name = client_name
@@ -310,6 +310,28 @@ def service_list_filter(request):
     return render(request, "bookkeeping/service_history.html", {
         "services": services,
     })
+
+@api_view(['GET'])
+def service_by_name_api(request):
+    name = request.GET.get("name")
+    services = ServiceRecord.objects.filter(
+        Q(customer_name_backup__iexact=name) | Q(client_name__iexact=name),
+        invoice__isnull=True  # only unbilled
+    )
+    data = [
+        {
+            "id": s.id,#type: ignore
+            "service_description": s.service_description,
+            "price": float(s.price),
+            "date": s.service_date
+        } for s in services
+    ]
+    return Response(data)
+
+def invoice_page(request):
+    services = ServiceRecord.objects.filter(invoice__isnull=True)
+    return render(request,"bookkeeping/invoice_gen.html",{"services":services})
+
 
 
 
