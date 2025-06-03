@@ -33,8 +33,9 @@ class Customer(models.Model):
         return self.name
     
 class Invoice(models.Model):
+    invoice_number = models.CharField(max_length=20, unique=True, editable=False, blank=True)
     customer = models.ForeignKey(Customer, null=True, blank=True, on_delete=models.SET_NULL)
-    client_name = models.CharField(max_length=255, blank=True)  # For special service types
+    client_name = models.CharField(max_length=255, blank=True)
     date_issued = models.DateField(auto_now_add=True)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     
@@ -44,11 +45,26 @@ class Invoice(models.Model):
         ('unpaid', 'Unpaid'),
     ]
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
-
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
+#FUNCTON THAT GENERATE THE UNIQUE CODE FOR EACH INVOICE CREATED
+    def save(self, *args, **kwargs):
+        if not self.invoice_number:
+            last_invoice = Invoice.objects.order_by('-id').first()
+            if last_invoice and last_invoice.invoice_number:
+                try:
+                    last_number = int(last_invoice.invoice_number.split('-')[1])
+                except (IndexError, ValueError):
+                    last_number = 0
+            else:
+                last_number = 0
+
+            new_number = last_number + 1
+            self.invoice_number = f"INV-{new_number:03}"
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"Invoice #{self.pk} - {self.customer.name if self.customer else self.client_name}"
+        return self.invoice_number
 
 class ServiceRecord(models.Model):
     SERVICE_TYPE_CHOICES = [
