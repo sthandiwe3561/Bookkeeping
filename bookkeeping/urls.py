@@ -18,7 +18,13 @@ urlpatterns = [
     path("services_edit/<int:record_id>/", views.edit_service, name="service_edit"),
     path("service_list_fiilter",views.service_list_filter, name="service_list_filter"),
     path('api/service-by-name/', views.service_by_name_api, name='service_api'),
-    path("invoice_page",views.invoice_page,name="invoice_page")
+    path("invoice_page",views.invoice_page,name="invoice_page"),
+    path("create_invoice",views.create_invoice,name="create_invoice"), #type: ignore
+    path('invoice_display/<int:invoice_id>/', views.invoice_display, name='invoice_display'),
+    path("invoice/<int:invoice_id>/download/", views.download_invoice_pdf, name="download_invoice_pdf"),
+    path('api/invoices/<int:invoice_id>/delete/', views.delete_invoice, name='delete_invoice_api')
+
+
 
     
 ]

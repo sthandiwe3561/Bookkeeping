@@ -6,12 +6,18 @@ from django.urls import reverse
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from datetime import datetime
+from decimal import Decimal
+from django.conf import settings
+from django.contrib.staticfiles import finders
+from django.template.loader import get_template
+from django.http import HttpResponse
+from xhtml2pdf import pisa
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import CustomerSerializer,ServiceRecordSerializer
+from rest_framework import status
+from .serializers import CustomerSerializer
 
-from .models import Customer,User,ServiceRecord
+from .models import Customer,User,ServiceRecord,Invoice
 
 
 # Create your views here.
@@ -330,7 +336,107 @@ def service_by_name_api(request):
 
 def invoice_page(request):
     services = ServiceRecord.objects.filter(invoice__isnull=True)
-    return render(request,"bookkeeping/invoice_gen.html",{"services":services})
+    invoices = Invoice.objects.all()
+    return render(request,"bookkeeping/invoice_gen.html",{"services":services,
+                                                          "invoices":invoices
+                                                          })
+
+def create_invoice(request):
+        if request.method == "POST":
+            service_ids = request.POST.getlist("selected_services")
+            services = ServiceRecord.objects.filter(id__in=service_ids)
+
+            # Determine client name or customer (assuming all services are for one client/customer)
+            first_service = services.first()
+            customer = None
+            client_name = ""
+
+            if first_service:
+                 if first_service.service_type == "special":
+                     client_name = first_service.client_name
+                 else:
+                     customer = first_service.customer
+
+                     # Optional fallback
+                     if not customer and first_service.customer_name_backup:
+                          client_name = first_service.customer_name_backup
+
+            # Calculate total amount
+            total_amount = sum(service.price for service in services)
+
+            # Create the invoice
+            invoice = Invoice.objects.create(
+                      customer=customer,
+                      client_name=client_name,
+                      total_amount=Decimal(total_amount),
+                      created_by=request.user,
+                    )
+            
+            # Link services to invoice
+            services.update(invoice=invoice)  # Optional, since M2M is already set
+
+            return redirect('invoice_page')
+
+
+def invoice_display(request,invoice_id):
+    invoice = get_object_or_404(Invoice, id=invoice_id)
+    show_download_button = request.GET.get("download") == "true"
+
+
+
+    context = {
+    'invoice': invoice,
+    'company_name': "The Horses Garden Services",
+    'company_address': "3561 Mpophomeni, Merrival, 3291",
+    'company_phone': "072 123 4567",
+    'show_download_button': show_download_button,  # 🆕
+   }
+    return render(request,"bookkeeping/generated_invoice.html",context)
+
+
+            
+
+#download invoice function
+def download_invoice_pdf(request, invoice_id):
+    invoice = get_object_or_404(Invoice, id=invoice_id)
+
+    context = {
+        "invoice": invoice,
+        "company_name": "The Horses Garden Services",
+        "company_address": "3561 Mpophomeni, Merrival, 3291",
+        "company_phone": "072 123 4567",
+        "show_download_button": False,  # optional: don't show button in PDF
+        "pdf_export": True  # Tell the template to hide nav
+
+    }
+
+    template = get_template("bookkeeping/generated_invoice.html")
+    html = template.render(context)
+
+    css_path = finders.find("bookkeeping/invoice.css")
+    if isinstance(css_path, list):
+        css_path = css_path[0]
+
+    if css_path:
+        with open(css_path) as css_file:
+            css = css_file.read()
+        html = html.replace("</head>", f"<style>{css}</style></head>")
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = f"attachment; filename=invoice_{invoice_id}.pdf"
+    pisa.CreatePDF(html, dest=response)
+
+    return response
+
+# invoice api to delete
+@api_view(["DELETE"])
+def delete_invoice(request, invoice_id):
+    try:
+        invoice = Invoice.objects.get(id=invoice_id)
+        invoice.delete()
+        return Response({"message": "Invoice deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+    except Invoice.DoesNotExist:
+        return Response({"error": "Invoice not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
 

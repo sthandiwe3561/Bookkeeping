@@ -9,9 +9,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <title>{% block title %}Digital Bookkeeping{% endblock %}</title>
+    <!-- External styles for normal website -->
     <link href="{% static 'bookkeeping/styles.css' %}" rel="stylesheet" />
 </head>
 <body>
+  {% if not pdf_export %}
     <div class="sidebar">
       <div class="top">
         <div class="logo">
@@ -102,6 +104,7 @@
       {% endif %}
       </ul>
     </div>
+    {% endif %}
     <div class="main-content">
       <div class="container">
       {% block body %}{% endblock %}

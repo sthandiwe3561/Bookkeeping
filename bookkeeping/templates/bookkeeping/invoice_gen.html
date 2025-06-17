@@ -22,7 +22,7 @@
   </select>
 </div>
 <div class="services_available" style="display: none;">
- <form method="POST" action="#">
+ <form method="POST" action="{% url 'create_invoice' %}">
   {% csrf_token %}
   
   <label>
@@ -38,5 +38,56 @@
 
 </div>
 
-<div class="invoices_available"></div>
+
+<div class="invoices_available">
+  {% if invoices %}
+     <table class="bids-table">
+      <thead>
+        <tr>
+          <th>Invoice No</th>
+          <th>Name</th>
+          <th>Date</th>
+          <th>Total amount</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+    <tbody>
+  {% for invoice in invoices %}
+  <tr>
+    <td>{{ invoice.invoice_number }}</td>
+    {% with invoice.services.all as services %}
+      {% if services|length > 0 and services.0.service_type == "special" %}
+        <td>{{ invoice.client_name }}</td>
+      {% else %}
+        <td>{{ invoice.customer.name }}</td>
+      {% endif %}
+    {% endwith %}
+    <td>{{ invoice.date_issued }}</td>
+    <td>{{ invoice.total_amount }}</td>
+    <td>
+    <div class="d-flex gap-2">
+  <a  href="{% url 'invoice_display' invoice.id %}?download=true" class="btn btn-sm btn-success">
+    <i class="bi bi-download"></i> Download
+  </a>
+  <a href="{% url 'invoice_display' invoice.id %}" class="btn btn-sm btn-outline-primary">
+    <i class="bi bi-eye"></i> View
+  </a>
+
+<a href="#" class="btn btn-sm btn-danger delete-invoice-btn" data-id="{{ invoice.id }}">
+  <i class="bi bi-trash"></i> 
+</a>
+
+
+</div>
+
+    </td>
+  </tr>
+  {% endfor %}
+</tbody>
+
+     {% else %} 
+     <p>No invoice Available</p>
+     {% endif %}
+     
+</div>
 {% endblock %}

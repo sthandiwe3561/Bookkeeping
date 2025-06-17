@@ -498,3 +498,59 @@ h2.customer-list{
   .service_history h1{
     text-align: center;
   }
+
+  /*invoice details*/
+     .invoice-box {
+            max-width: 800px;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .invoice-box table {
+            width: 100%;
+            line-height: inherit;
+            text-align: left;
+            border-collapse: collapse;
+        }
+
+        .invoice-box table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        .invoice-box table th {
+            padding: 10px;
+            background: #f0f0f0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .total {
+            font-weight: bold;
+        }
+
+        .heading {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+          .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        text-decoration: none;
+        color: #007bff;
+        font-weight: bold;
+    }
+
+    /* Hide this link when printing */
+    @media print {
+        .back-link {
+            display: none;
+        }
+    }
+

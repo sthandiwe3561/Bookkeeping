@@ -1,0 +1,77 @@
+{% extends "bookkeeping/layout.html" %} 
+{% block body %}
+<a href="{% url 'invoice_page' %}" class="back-link">
+    ← Back to Invoices
+</a>
+
+<div class="invoice-box">
+    <div class="heading">TAX INVOICE</div>
+
+    <table>
+        <tr>
+            <td>
+                <strong>{{ company_name }}</strong><br>
+                {{ company_address }}<br>
+                Phone: {{ company_phone }}
+            </td>
+            <td class="text-right">
+                <strong>Invoice #: </strong>{{ invoice.invoice_number }}<br>
+                <strong>Date: </strong>{{ invoice.date_issued }}
+            </td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <table>
+        <tr>
+            <td>
+                <strong>Billed To:</strong><br>
+                {% if invoice.client_name %}
+                    {{ invoice.client_name }}
+                {% else %}
+                    {{ invoice.customer.name }}
+                {% endif %}
+                <br>
+                {% if invoice.customer.estate %}
+                    Estate: {{ invoice.customer.estate }}
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+
+
+    <table>
+        <thead>
+            <tr>
+                <th>Description of Service</th>
+                <th class="text-right">Price (R)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for service in invoice.services.all %}
+            <tr>
+                <td>{{ service.service_description }}</td>
+                <td class="text-right">{{ service.price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td class="total">Total</td>
+                <td class="total text-right">R {{ invoice.total_amount }}</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+{% if show_download_button %}
+    <div class="text-end mt-4">
+        <a class="btn btn-primary" href="{% url 'download_invoice_pdf' invoice.id %}">
+            <i class="bi bi-download"></i> Download / Print
+        </a>
+    </div>
+{% endif %}
+
+
+{% endblock %}
