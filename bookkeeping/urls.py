@@ -24,6 +24,8 @@ urlpatterns = [
     path("invoice/<int:invoice_id>/download/", views.download_invoice_pdf, name="download_invoice_pdf"),
     path('api/invoices/<int:invoice_id>/delete/', views.delete_invoice, name='delete_invoice_api'),
     path("add_expense", views.create_expense, name="add_expense"),
+    path('expense_delete/<int:post_id>/', views.expense_delete, name='expense_delete'),
+
 
 
 

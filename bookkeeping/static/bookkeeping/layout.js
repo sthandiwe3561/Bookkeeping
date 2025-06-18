@@ -187,13 +187,6 @@ selectAllCheckbox.addEventListener("change", () => {
         }
       })
     })
- 
 
-// Pre-fill today's date for the date input in service history form
-const today = new Date().toISOString().split('T')[0];
-const dateInput = document.getElementById('serviceDateInput')
-if (dateInput) {
-  dateInput.value = today;
-}
     
 });

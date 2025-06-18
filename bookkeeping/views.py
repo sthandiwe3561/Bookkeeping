@@ -456,9 +456,34 @@ def create_expense(request):
         )
         expense.save()  # ✅ Save the expense to the database
 
-        return redirect('add_expense')
+        return redirect(reverse('add_expense') + f'?highlight=expense-{expense.id}') #type: ignore
 
     return render(request,"bookkeeping/expense.html",{'expenses':expenses})
+
+#delete expense
+def expense_delete(request, post_id):
+    # Get the customer to delete (make sure it's the current user's)
+    expense_to_delete = get_object_or_404(Expense, id=post_id)
+
+    # Try to get the next customer (by ID)
+    next_expense = Expense.objects.filter(id__gt=post_id).order_by('id').first()
+
+    # If there’s no next one, try the previous one
+    if not next_expense:
+        next_expense = Expense.objects.filter(id__lt=post_id).order_by('-id').first()
+
+    # Store ID for redirect highlight
+    highlight_id = next_expense.id if next_expense else "" #type: ignore
+
+    # Delete the customer
+    expense_to_delete.delete()
+
+    # Redirect with highlight_id (if any)
+    if highlight_id:
+        return redirect(reverse('add_expense') + f'?highlight=service-{highlight_id}')
+    else:
+        return redirect('add_expense')
+
     
 
   
