@@ -17,7 +17,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import CustomerSerializer
 
-from .models import Customer,User,ServiceRecord,Invoice
+from .models import Customer,User,ServiceRecord,Invoice,Expense
 
 
 # Create your views here.
@@ -437,7 +437,30 @@ def delete_invoice(request, invoice_id):
         return Response({"message": "Invoice deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
     except Invoice.DoesNotExist:
         return Response({"error": "Invoice not found."}, status=status.HTTP_404_NOT_FOUND)
+    
 
+#expenses
+#create and save expenses function
+def create_expense(request):
+    expenses = Expense.objects.all()
+    if request.method == "POST":
+        selected_category = request.POST.get("expense_category")
+        price = request.POST.get("price")
+        date = request.POST.get("date")
 
+        expense = Expense(
+            user = request.user,
+            price = price,
+            expense = selected_category,
+            expense_date = date
+        )
+        expense.save()  # ✅ Save the expense to the database
+
+        return redirect('add_expense')
+
+    return render(request,"bookkeeping/expense.html",{'expenses':expenses})
+    
+
+  
 
 

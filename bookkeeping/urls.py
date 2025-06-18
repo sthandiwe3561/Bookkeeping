@@ -22,7 +22,9 @@ urlpatterns = [
     path("create_invoice",views.create_invoice,name="create_invoice"), #type: ignore
     path('invoice_display/<int:invoice_id>/', views.invoice_display, name='invoice_display'),
     path("invoice/<int:invoice_id>/download/", views.download_invoice_pdf, name="download_invoice_pdf"),
-    path('api/invoices/<int:invoice_id>/delete/', views.delete_invoice, name='delete_invoice_api')
+    path('api/invoices/<int:invoice_id>/delete/', views.delete_invoice, name='delete_invoice_api'),
+    path("add_expense", views.create_expense, name="add_expense"),
+
 
 
 
