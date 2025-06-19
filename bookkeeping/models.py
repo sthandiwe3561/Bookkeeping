@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from datetime import date
 from django.db import models
 
 # Create your models here.
@@ -36,7 +37,7 @@ class Invoice(models.Model):
     invoice_number = models.CharField(max_length=20, unique=True, editable=False, blank=True)
     customer = models.ForeignKey(Customer, null=True, blank=True, on_delete=models.SET_NULL)
     client_name = models.CharField(max_length=255, blank=True)
-    date_issued = models.DateField(auto_now_add=True)
+    date_issued = models.DateField(default=date.today)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     
     STATUS_CHOICES = [
@@ -85,7 +86,7 @@ class ServiceRecord(models.Model):
 
     service_description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    service_date = models.DateField(auto_now_add=True)
+    service_date = models.DateField(default=date.today)
     invoice = models.ForeignKey(Invoice, null=True, blank=True, on_delete=models.SET_NULL, related_name="services")
 
 
@@ -98,7 +99,7 @@ class Expense(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="expense")
     expense = models.CharField(max_length=20, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    expense_date = models.DateField(auto_now_add=True)
+    expense_date = models.DateField(default=date.today)
 
     def __str__(self):
         return self.expense
