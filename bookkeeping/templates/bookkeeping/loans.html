@@ -2,7 +2,7 @@
 {% block body %}
 <h1>Loan History</h1>
 <div class="loanForm">
-    <form method="POST" action="">
+    <form method="POST" action="{% url 'add_loan' %}">
   {% csrf_token %}
   <div class="mb-3">
         <label for="laoner_name" class="form-label">Name:</label>
@@ -28,4 +28,39 @@
   <button type="submit">Submit</button>
 </form>
 </div>
+
+{% if loans %}
+<div class="Display">
+    <table class="bids-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Loan Reason</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for loan in loans %}
+          <tr>
+            <td>{{loan.loan_date}}</td>
+            <td>{{loan.name}}</td>
+            <td>{{ loan.price}}</td>
+            <td>{{loan.loan_status}}</td>
+            <td>{{loan.loan_reason}}</td>
+            <td>
+              <a href="{% url 'loan_delete' loan.id %}" class="btn btn-sm btn-danger">
+  <i class="bi bi-trash"></i> 
+</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p>No Loan Available</p>
+{% endif %}
 {% endblock %}

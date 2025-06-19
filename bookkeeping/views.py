@@ -507,7 +507,32 @@ def create_loan(request):
 
         return redirect(reverse('add_loan') + f'?highlight=loan-{loan.id}') #type: ignore
 
-    return render(request,"bookkeeping/loan.html",{'loans':loans})
+    return render(request,"bookkeeping/loans.html",{'loans':loans})
+
+#delete loan
+def loan_delete(request, post_id):
+    # Get the customer to delete (make sure it's the current user's)
+    loan_to_delete = get_object_or_404(Loans, id=post_id)
+
+    # Try to get the next customer (by ID)
+    next_loan = Loans.objects.filter(id__gt=post_id).order_by('id').first()
+
+    # If there’s no next one, try the previous one
+    if not next_loan:
+        next_loan = Loans.objects.filter(id__lt=post_id).order_by('-id').first()
+
+    # Store ID for redirect highlight
+    highlight_id = next_loan.id if next_loan else "" #type: ignore
+
+    # Delete the customer
+    loan_to_delete.delete()
+
+    # Redirect with highlight_id (if any)
+    if highlight_id:
+        return redirect(reverse('add_loan') + f'?highlight=loan-{highlight_id}')
+    else:
+        return redirect('add_loan')
+
 
   
 

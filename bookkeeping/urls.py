@@ -26,7 +26,6 @@ urlpatterns = [
     path("add_expense", views.create_expense, name="add_expense"),
     path('expense_delete/<int:post_id>/', views.expense_delete, name='expense_delete'),
     path("add_loan", views.create_loan, name="add_loan"),
+    path('loan_delete/<int:post_id>/', views.loan_delete, name='loan_delete'),
 
-
-    
 ]
