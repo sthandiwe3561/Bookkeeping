@@ -1,0 +1,31 @@
+{% extends "bookkeeping/layout.html" %} 
+{% block body %}
+<h1>Loan History</h1>
+<div class="loanForm">
+    <form method="POST" action="">
+  {% csrf_token %}
+  <div class="mb-3">
+        <label for="laoner_name" class="form-label">Name:</label>
+        <input type="text" id="name" name="name" class="form-control" value="">
+      </div>
+
+        <div class="mb-3">
+      <label for="loan_reason" class="form-label">Reason for Loan:</label>
+      <textarea name="loan_reason" autocomplete="off" id="loan_reason" class="form-control"></textarea>
+    </div>
+    
+   <div class="mb-3">
+        <label for="amount" class="form-label">Loan Amount:</label>
+        <input type="number" id="price" name="loan_amount" class="form-control" value="">
+      </div>
+    
+       <div class="mb-4">
+      <label for="DateInput" class="form-label">Date:</label>
+      <input type="date" name="date" autocomplete="off" id="DateInput" class="form-control" value="">
+    </div>
+  
+
+  <button type="submit">Submit</button>
+</form>
+</div>
+{% endblock %}

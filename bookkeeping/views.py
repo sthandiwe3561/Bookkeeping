@@ -17,7 +17,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import CustomerSerializer
 
-from .models import Customer,User,ServiceRecord,Invoice,Expense
+from .models import Customer,User,ServiceRecord,Invoice,Expense,Loans
 
 
 # Create your views here.
@@ -485,6 +485,29 @@ def expense_delete(request, post_id):
         return redirect('add_expense')
 
     
+#loan 
+#adding/creating and displaying loan function
+
+def create_loan(request):
+    loans = Loans.objects.all()
+    if request.method == "POST":
+        name = request.POST.get("name")
+        loan_reason = request.POST.get("loan_reason")
+        amount = request.POST.get("loan_amount")
+        date = request.POST.get("date")
+
+        loan = Loans(
+            user = request.user,
+            price = amount,
+            loan_reason = loan_reason,
+            name = name,
+            loan_date = date
+        )
+        loan.save()  # ✅ Save the expense to the database
+
+        return redirect(reverse('add_loan') + f'?highlight=loan-{loan.id}') #type: ignore
+
+    return render(request,"bookkeeping/loan.html",{'loans':loans})
 
   
 
