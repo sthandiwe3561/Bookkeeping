@@ -104,4 +104,19 @@ class Expense(models.Model):
     def __str__(self):
         return self.expense
 
+class Loans(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="loan")
+    name = models.CharField(max_length=20, blank=True)
+    loan_reason = models.TextField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    loan_date = models.DateField(default=date.today)
+    STATUS_CHOICES = [
+        ('paid', 'Paid'),
+        ('unpaid', 'Unpaid'),
+    ]
+    loan_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='unpaid')
+
+    def __str__(self):
+        return self.name
+
 
