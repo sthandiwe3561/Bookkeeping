@@ -27,7 +27,7 @@ The business is not tech-savvy, so I also wanted to show them how technology can
   2.2 pip install djangorestframework
   2.3 pip install xhtml2pdf
 
-3.Run Migrations
+ 3.Run Migrations
   3.1 python manage.py makemigrations
   3.2 python manage.py migrate
 
