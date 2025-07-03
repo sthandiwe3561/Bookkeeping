@@ -1,5 +1,5 @@
 🧾 Project Title:
-A digital bookkeeping web app to help small businesses track services and generate downloadable invoices.
+◾ A digital bookkeeping web app to help small businesses track services and generate downloadable invoices.
 
 🚀 Features:
 1. Add services and customers
