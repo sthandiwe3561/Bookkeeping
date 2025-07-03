@@ -16,3 +16,28 @@ This app makes it easier for them to log, manage, and access service records —
 Beyond solving a real-world problem, I used this project to challenge myself. I designed my own database models, implemented full CRUD functionality, and learned how to generate downloadable PDFs using xhtml2pdf.
 
 The business is not tech-savvy, so I also wanted to show them how technology can simplify their operations and be something they can rely on, even with limited experience.
+
+📦 Setup Instructions:
+1. Clone the Repository
+git clone <your-repo-link>
+cd <your-project-folder>
+
+2. Install Dependencies
+pip install Django
+pip install djangorestframework
+pip install xhtml2pdf
+
+3.Run Migrations
+python manage.py makemigrations
+python manage.py migrate
+
+4. Start Development Server
+python manage.py runserver
+✅ Done! You're ready to use the app.
+
+
+
+
+
+
+
