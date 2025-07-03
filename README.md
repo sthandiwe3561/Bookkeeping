@@ -19,20 +19,20 @@ The business is not tech-savvy, so I also wanted to show them how technology can
 
 📦 Setup Instructions:
 1. Clone the Repository
-git clone <your-repo-link>
-cd <your-project-folder>
+  1.1 git clone <your-repo-link>
+  1.2 cd <your-project-folder>
 
 2. Install Dependencies
-pip install Django
-pip install djangorestframework
-pip install xhtml2pdf
+  2.1 pip install Django
+  2.2 pip install djangorestframework
+  2.3 pip install xhtml2pdf
 
 3.Run Migrations
-python manage.py makemigrations
-python manage.py migrate
+  3.1 python manage.py makemigrations
+  3.2 python manage.py migrate
 
 4. Start Development Server
-python manage.py runserver
+   4.1 python manage.py runserver
 ✅ Done! You're ready to use the app.
 
 
