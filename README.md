@@ -18,21 +18,21 @@ Beyond solving a real-world problem, I used this project to challenge myself. I 
 The business is not tech-savvy, so I also wanted to show them how technology can simplify their operations and be something they can rely on, even with limited experience.
 
 📦 Setup Instructions:
-1. Clone the Repository
-  1.1 git clone <your-repo-link>
-  1.2 cd <your-project-folder>
+ 1. Clone the Repository:
+  1. git clone <your-repo-link>
+  2. cd <your-project-folder>
 
-2. Install Dependencies
-  2.1 pip install Django
-  2.2 pip install djangorestframework
-  2.3 pip install xhtml2pdf
+ 2. Install Dependencies:
+  1. pip install Django
+  2. pip install djangorestframework
+  3. pip install xhtml2pdf
 
- 3.Run Migrations
-  3.1 python manage.py makemigrations
-  3.2 python manage.py migrate
+ 3. Run Migrations:
+   1 python manage.py makemigrations
+   2 python manage.py migrate
 
-4. Start Development Server
-   4.1 python manage.py runserver
+4. Start Development Server:
+  1 python manage.py runserver
 ✅ Done! You're ready to use the app.
 
 
