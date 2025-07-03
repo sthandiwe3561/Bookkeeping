@@ -28,6 +28,18 @@ The business is not tech-savvy, so I also wanted to show them how technology can
   8. python manage.py runserver
 ✅ Done! You're ready to use the app.
 
+🛠️ Tech Stack:
+1. Python, Django
+2. HTML/CSS, JavaScript
+3. Bootstrap
+4. SQLite 
+5. xhtml2pdf
+
+📸 Screenshots (Optional)
+
+
+
+
 
 
 
