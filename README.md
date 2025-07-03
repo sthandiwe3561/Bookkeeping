@@ -18,8 +18,8 @@ Beyond solving a real-world problem, I used this project to challenge myself. I 
 The business is not tech-savvy, so I also wanted to show them how technology can simplify their operations and be something they can rely on, even with limited experience.
 
 📦 Setup Instructions:
-  1. git clone <your-repo-link>
-  2. cd <your-project-folder>
+  1. git clone https://github.com/sthandiwe3561/Bookkeeping.git
+  2. cd Bookkeeping
   3. pip install Django
   4. pip install djangorestframework
   5. pip install xhtml2pdf
